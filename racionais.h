@@ -141,7 +141,7 @@ int compara_r (struct racional r1, struct racional r2);
    - se o numerador for igual a 0, deve ser impresso somente zero;
    - se o denominador for igual a 1, deve ser impresso somente o numerador;
    - se o numerador e denominador forem o mesmo valor, deve imprimir somente 1;
-   - se o racional for negativo, o sinal deve ser impresso antes do numero;
+   - se o rac    numero;
    - se ambos numerador e denominador forem negativos, o racional eh positivo;
    - se o racional for invalido, deve imprimir a mensagem "INVALIDO"           */
 void imprime_r (struct racional r);

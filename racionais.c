@@ -9,7 +9,7 @@
 
 /* retorna um numero aleatorio entre min e max, inclusive. */
 int aleat (int min, int max){
-    return min + rand() % (max+1 - min);
+    return ((rand() % (max - min + 1)) + min);
 }
 
 /* Maximo Divisor Comum entre a e b      */
@@ -34,10 +34,14 @@ int mmc (int a, int b){
  * Se o denominador for negativo, o sinal deve migrar para o numerador.
  * Quem chama esta funcao deve garantir que o racional r eh valido */
 void simplifica_r (struct racional *r){
-
+    int divisor = mdc (numerador_r (*r), denominador_r (*r));
+    r->num = r->num / divisor;
+    r->den = r->den / divisor;
+    if (denominador_r (*r) < 0){
+        r->num = numerador_r (*r) * -1;
+        r->den = denominador_r (*r) * -1;
+    }
 }
-
-/* aqui voce pode definir mais funcoes internas, caso queira ou precise */
 
 int numerador_r (struct racional r){
     return r.num;
@@ -52,7 +56,16 @@ int valido_r (struct racional r){
 }
 
 struct racional cria_r (int numerador, int denominador){
-
+    struct racional r;
+    r.num = numerador;
+    r.den = denominador;
+    if (denominador == 0)
+        r.valido = 0;
+    else
+        r.valido = 1;
+    if (valido_r (r))
+        simplifica_r (&r);
+    return r;
 }
 
 struct racional sorteia_r (int n){
@@ -63,7 +76,70 @@ struct racional sorteia_r (int n){
         r.valido = 0;
     else
         r.valido = 1;
-    if (valido_r)
-        simplifica_r (r);
+    if (valido_r (r))
+        simplifica_r (&r);
     return r;
+}
+
+void soma_r (struct racional r1, struct racional r2, struct racional *r3){
+    if (valido_r (r1) && valido_r (r2))
+        r3->valido = 1;
+    else
+        r3->valido = 0;
+    r3->den = mmc (denominador_r (r1), denominador_r (r2));
+    r3->num = (denominador_r (*r3) / denominador_r (r1) * numerador_r (r1)) + (denominador_r (*r3) / denominador_r (r2) * numerador_r (r2));
+    simplifica_r (r3);
+}
+void subtrai_r (struct racional r1, struct racional r2, struct racional *r3){
+    if (valido_r (r1) && valido_r (r2))
+        r3->valido = 1;
+    else
+        r3->valido = 0;
+    r3->den = mmc (denominador_r (r1), denominador_r (r2));
+    r3->num = (denominador_r (*r3) / denominador_r (r1) * numerador_r (r1)) - (denominador_r (*r3) / denominador_r (r2) * numerador_r (r2));
+    simplifica_r (r3);
+}
+void multiplica_r (struct racional r1, struct racional r2, struct racional *r3){
+    if (valido_r (r1) && valido_r (r2))
+        r3->valido = 1;
+    else
+        r3->valido = 0;
+    r3->den = denominador_r (r1) * denominador_r (r2);
+    r3->num = numerador_r (r1) * numerador_r (r2);
+    simplifica_r (r3);
+}
+
+int divide_r (struct racional r1, struct racional r2, struct racional *r3){
+    if (numerador_r (r2) == 0)
+        r3->valido = 0;
+    else
+        r3->valido = 1;
+    r3->den = denominador_r (r1) * numerador_r (r2);
+    r3->num = numerador_r (r1) * denominador_r (r2);
+    simplifica_r (r3);
+    return valido_r (*r3);
+}
+
+int compara_r (struct racional r1, struct racional r2){
+    r1.num = denominador_r (r2) * numerador_r (r1);
+    r2.num = denominador_r (r1) * numerador_r (r2);
+    if (numerador_r (r1) > numerador_r (r2))
+        return 1;
+    if (numerador_r (r1) < numerador_r (r2))
+        return -1;
+    else
+        return 0;
+}
+
+void imprime_r (struct racional r){
+    if ((numerador_r (r) == 0) || (denominador_r (r) == 1))
+        printf ("%d", numerador_r (r));
+    else
+        if (numerador_r (r) == denominador_r (r))
+            printf ("1");
+        else
+            if (!valido_r (r))
+                printf ("INVALIDO");
+            else
+                printf("%d/%d", numerador_r (r), denominador_r (r));
 }
