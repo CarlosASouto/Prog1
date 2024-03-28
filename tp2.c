@@ -7,7 +7,7 @@
 int main (){
     int n, max;
     struct racional r1, r2, soma, sub, mult, div;
-    srand(10);
+    srand(2);
     scanf ("%d", &n);
     scanf ("%d", &max);
     for (int i = 0; i < n; i++)
@@ -19,16 +19,17 @@ int main (){
         printf (" ");
         imprime_r (r2);
         if (!valido_r (r1) || !valido_r (r2)){
-            printf (" NUMERO INVALIDO");
+            printf (" NUMERO INVALIDO\n");
             return 1;
         }
         soma_r (r1, r2, &soma);
         subtrai_r (r1, r2, &sub);
         multiplica_r (r1, r2, &mult);
         if (!divide_r (r1, r2, &div)){
-            printf("DIVISAO INVALIDA");
+            printf(" DIVISAO INVALIDA\n");
             return 1;
         }
+        printf (" ");
         imprime_r (soma);
         printf (" ");
         imprime_r (sub);
