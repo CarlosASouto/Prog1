@@ -8,7 +8,6 @@
  * funções auxiliares para facilitar a implementação daquelas funções.
  */
 
-/* coloque aqui seus includes (primeiro os <...>, depois os "...") */
 #include <stdio.h>
 #include <stdlib.h>
 #include "racional.h"
