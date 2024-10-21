@@ -78,31 +78,30 @@ struct racional *cria_r (long numerador, long denominador)
 void destroi_r (struct racional *r)
 {
   free (r);
-  r = NULL;
 }
 
 void imprime_r (struct racional *r)
 {
+    if (r == NULL){
+        printf ("NULL");
+        return;
+    }
   simplifica_r (r);
 
-  if (r == NULL){
-     printf ("NULL ");
-     return;
-  }
   if (!valido_r (r)){
-     printf ("NaN ");
+     printf ("NaN");
      return;
   }
   if (r->num == 0 || r->den ==1){
-     printf ("%ld ", r->num);
+     printf ("%ld", r->num);
      return;
   }
   if (r->num == r->den){
-     printf ("%d ", 1);
+     printf ("%d", 1);
      return;
   }
 
-  printf ("%ld/%ld ", r->num, r->den);
+  printf ("%ld/%ld", r->num, r->den);
 }
 
 int compara_r (struct racional *r1, struct racional *r2)
@@ -125,8 +124,11 @@ int soma_r (struct racional *r1, struct racional *r2, struct racional *r3)
 {
   if (!valido_r (r1) || !valido_r (r2) || r1 == NULL || r2 == NULL)
     return 0;
+
   r3->den = mmc (r1->den, r2->den);
   r3->num = (r3->den / r1->den * r1->num) + (r3->den / r2->den * r2->num);
+
+
   simplifica_r (r3);
 
   return 1;

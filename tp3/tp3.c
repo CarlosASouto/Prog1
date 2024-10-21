@@ -12,31 +12,35 @@
 void imprimeVetor (struct racional **vet, int tam)
 {
   printf ("VETOR = ");
-  for (int i = 0; i < tam; i++)
+  for (int i = 0; i < tam; i++){
     imprime_r (vet[i]);
+    if (i != tam - 1)
+        printf (" ");
+  }
   printf ("\n");
 }
 
-/* Este algoritmo remove elementos invalidos do vetor substituindo-os
-pelo proximo elemento e diminuindo o tamanho do vetor */
-void removeInvalidos (struct racional v[], int *tam)
-{
-  int i, j;
 
-  for (i = 0; i < *tam; i++)
-     if (!valido_r (v[i])){
-       for (j = i; j < *tam; j++)
-          v[j] = v[j + 1]; // Este for substitui o valor do invalido pelo proximo elemento e ajusta o vetor para poder diminuir o tamanho
-       (*tam)--;
-       i--; //Decrementa o i para verificar a mesma posicao novamente
-     }
+void removeInvalidos (struct racional **vet, int *tam)
+{
+    int i, j = 0;
+
+    for (i = 0; i < *tam; i++)
+        if (valido_r (vet[i]))
+            vet[j++] = vet [i]; //Se valido, coloca o ponteiro na nova posicao
+        else
+        {
+            destroi_r (vet[i]); //Se invalido libera a memoria
+            vet[i] = NULL;
+        }
+    *tam = j; //Atualiza o tamanho do vetor
 }
 
-void trocaElementos (struct racional *a, struct racional *b)
+void trocaElementos (struct racional **vet, int a, int b)
 {
-  struct racional *temp = a;
-  a = b;
-  b = temp;
+    struct racional *temp = vet[a];
+    vet[a] = vet[b];
+    vet[b] = temp;
 }
 
 void bubbleSort (struct racional **vet, int tam)
@@ -45,9 +49,9 @@ void bubbleSort (struct racional **vet, int tam)
      return;
   
   for (int i = 0; i < tam-1; i++)
-     if (compara_r (vet[i], vet[i + 1]) == 1)
-       trocaElementos (vet[i], vet[i + 1]);
-  
+     if (compara_r (vet[i], vet[i + 1]) == 1) 
+        trocaElementos (vet, i, i + 1);
+
   bubbleSort (vet, tam-1);
 }
 /* programa principal */
@@ -56,6 +60,8 @@ int main ()
   int n = 0;
   long num, den;
   struct racional **vet;
+  struct racional *soma = cria_r (0, 1);
+  struct racional *aux = cria_r (0, 1);
 
   while (n <= 0 || n >= 100)
      scanf ("%d", &n);
@@ -74,9 +80,41 @@ int main ()
 
   imprimeVetor (vet, n);
 
+  removeInvalidos (vet, &n);
+
+  imprimeVetor (vet, n);
+
   bubbleSort (vet, n);
 
   imprimeVetor (vet, n);
-  
+
+  for (int i = 0; i < n; i++)
+  {  
+    soma_r (soma, vet[i], aux);
+    *soma = *aux;
+  }
+
+  destroi_r (aux);
+  aux = NULL;
+
+  printf ("SOMA = ");
+  imprime_r (soma);
+  printf ("\n");
+
+  for (int i = 0; i < n; i++)
+  {
+    destroi_r (vet [i]);
+    vet[i] = NULL;
+  }
+
+  imprimeVetor (vet, n);
+
+  free (vet);
+  vet = NULL;
+
+  destroi_r (soma);
+  soma = NULL;
+
+  return 0;
 }
 
