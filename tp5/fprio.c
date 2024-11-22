@@ -1,5 +1,5 @@
 // TAD Fila de prioridades (FPRIO) genérica
-// Carlos Maziero, DINF/UFPR, Out 2024
+// Carlos Souto, DINF/UFPR, Nov 2024
 // Implementação com lista encadeada simples
 
 
@@ -9,10 +9,10 @@
 
 struct fprio_t *fprio_cria ()
 {
-    struct fprio_t *fila = (struct fprio_t *) malloc (sizeof(struct fprio_t));
+    struct fprio_t *fila;
     
-    //Erro de alocação
-    if (fila == NULL)
+    fila = (struct fprio_t *) malloc (sizeof(struct fprio_t));
+    if (fila == NULL) //Falha de alocacao
         return NULL;
 
     fila->prim = NULL;
@@ -29,8 +29,7 @@ struct fprio_t *fprio_destroi (struct fprio_t *f)
     struct fpnodo_t *nodo_atual = f->prim;
     struct fpnodo_t *nodo_prox;
 
-    //Percorre todos os nodos da fila liberando-os
-    while (nodo_atual != NULL)
+    while (nodo_atual != NULL) //Percorre todos os nodos da fila liberando-os
     {
         nodo_prox = nodo_atual->prox;
         free (nodo_atual->item);
@@ -52,18 +51,16 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio)
     if (f == NULL || item == NULL)
         return -1;
 
-    //Verifica se o item já está na fila
     struct fpnodo_t *nodo_atual = f->prim;
-    while (nodo_atual != NULL)
+    while (nodo_atual != NULL) //Verifica se o item já está na fila
     {
-        if (nodo_atual->item == item){
+        if (nodo_atual->item == item)
             return -1;
-        }
         nodo_atual = nodo_atual->prox;
     }
     
-    //Cria novo nodo
-    struct fpnodo_t *novo_nodo = (struct fpnodo_t *) malloc (sizeof(struct fpnodo_t));
+    struct fpnodo_t *novo_nodo;
+    novo_nodo = (struct fpnodo_t *) malloc (sizeof(struct fpnodo_t));
     if (novo_nodo == NULL) //Falha na alocação
         return -1;
     
@@ -72,23 +69,22 @@ int fprio_insere (struct fprio_t *f, void *item, int tipo, int prio)
     novo_nodo->prio = prio;
     novo_nodo->prox = NULL;
 
-    //Fila vazia ou prioridade maior (insere no começo)
-    if (f->prim == NULL || prio < f->prim->prio)
+    f->num++;
+
+    if (f->prim == NULL || prio < f->prim->prio) //Fila vazia ou prioridade maior (insere no começo)
     {
         novo_nodo->prox = f->prim;
         f->prim = novo_nodo;
-    }
-    else //Encontra a posição correta
-    {
-        nodo_atual = f->prim;
-        while (nodo_atual->prox != NULL && nodo_atual->prox->prio <= prio)
-            nodo_atual = nodo_atual->prox;
 
-        novo_nodo->prox = nodo_atual->prox;
-        nodo_atual->prox = novo_nodo;
+        return f->num;
     }
 
-    f->num++;
+    nodo_atual = f->prim;
+    while (nodo_atual->prox != NULL && nodo_atual->prox->prio <= prio) //Encontra a posição correta
+        nodo_atual = nodo_atual->prox;
+
+    novo_nodo->prox = nodo_atual->prox;
+    nodo_atual->prox = novo_nodo;
 
     return f->num;
 }
@@ -133,14 +129,11 @@ void fprio_imprime (struct fprio_t *f)
 
     struct fpnodo_t *nodo_atual = f->prim;
 
-    while (nodo_atual != NULL)
+    while (nodo_atual->prox != NULL)
     {
-        printf("(%d %d)", nodo_atual->tipo, nodo_atual->prio);
-
+        printf("(%d %d) ", nodo_atual->tipo, nodo_atual->prio);
         nodo_atual = nodo_atual->prox;
-
-        if (nodo_atual != NULL)
-            printf (" ");
-
     }
+
+    printf("(%d %d)", nodo_atual->tipo, nodo_atual->prio);
 }
